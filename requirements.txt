@@ -1,0 +1,5 @@
+streamlit==1.33.0 
+cohere==5.9.0
+pinecone-client==5.0.0
+PyMuPDF==1.24.11        
+sentence-transformers==3.2.1
