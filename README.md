@@ -1,193 +1,191 @@
-<div align="center">
+# 📄 RAG Document Question Answering System
 
-# 📄🤖 RAG Document Question Answering System
+**Ask questions about your PDF documents and get answers using AI.**
 
-**Upload a PDF, ask questions in plain English, and get answers grounded in your document.**
+A document question-answering application built with Streamlit, FAISS, and transformer models. Upload a PDF, retrieve relevant text from the document, and generate answers based on its content.
 
-![Python](https://img.shields.io/badge/Python-3.9%2B-blue?logo=python&logoColor=white)
-![Streamlit](https://img.shields.io/badge/UI-Streamlit-FF4B4B?logo=streamlit&logoColor=white)
-![Cohere](https://img.shields.io/badge/LLM-Cohere-39594D)
-![Pinecone](https://img.shields.io/badge/Vector%20DB-Pinecone-000000)
-![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)
-
-[Features](#-features) · [How It Works](#-how-it-works) · [Quick Start](#-quick-start) · [Project Structure](#-project-structure) · [Troubleshooting](#-troubleshooting)
-
-</div>
-
----
-
-## 💡 About
-
-This project is a **Retrieval-Augmented Generation (RAG)** chatbot. Instead of guessing, it first *searches your PDF* for the passages most relevant to your question, then uses a language model to write an answer based only on those passages.
-
-It is useful for quickly getting answers out of long documents such as research papers, reports, notes, and manuals, without reading them page by page.
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.10%2B-blue?logo=python" alt="Python">
+  <img src="https://img.shields.io/badge/Streamlit-Web%20App-FF4B4B?logo=streamlit" alt="Streamlit">
+  <img src="https://img.shields.io/badge/FAISS-Vector%20Search-green" alt="FAISS">
+  <img src="https://img.shields.io/badge/AI-FLAN--T5-orange" alt="FLAN-T5">
+</p>
 
 ---
 
 ## ✨ Features
 
-- 📥 **PDF upload** – extract text from any text-based PDF
-- ✂️ **Smart chunking** – long documents are split into small pieces for accurate search
-- 🔎 **Semantic search** – finds passages by *meaning*, not just keywords
-- 💬 **Grounded answers** – responses are generated from the retrieved parts of your document
-- 🖥️ **Simple web interface** – built with Streamlit, no coding needed to use it
+* 📂 **PDF Upload:** Upload a PDF document directly through the web interface.
+* 📝 **Text Extraction:** Extract text from PDF pages using PyMuPDF.
+* ✂️ **Text Chunking:** Divide document text into smaller chunks for retrieval.
+* 🧠 **Text Embeddings:** Convert document chunks into numerical representations using Sentence Transformers.
+* 🔍 **Semantic Search:** Use FAISS to find relevant document sections.
+* 💬 **AI-Generated Answers:** Generate answers using the FLAN-T5-base model.
+* 🖥️ **Interactive Interface:** Use the application through a simple Streamlit web interface.
 
----
+## 🛠️ Tech Stack
 
-## 🧠 How It Works
+| Technology            | Purpose                                    |
+| --------------------- | ------------------------------------------ |
+| Python                | Core programming language                  |
+| Streamlit             | Web application interface                  |
+| PyMuPDF               | Extract text from PDF files                |
+| Sentence Transformers | Generate text embeddings                   |
+| FAISS                 | Similarity search over document embeddings |
+| FLAN-T5-base          | Generate answers from retrieved context    |
+| NumPy                 | Numerical operations                       |
 
+## ⚙️ How It Works
+
+The application follows a Retrieval-Augmented Generation (RAG)-style workflow:
+
+1. **Upload a PDF** — Select a document using the Streamlit interface.
+2. **Extract text** — Read the text from the PDF pages.
+3. **Create chunks** — Split the extracted text into chunks of approximately 500 words.
+4. **Generate embeddings** — Convert each chunk into a vector using `all-MiniLM-L6-v2`.
+5. **Build the index** — Store the vectors in a FAISS index.
+6. **Retrieve context** — Search for the three most relevant chunks based on the question.
+7. **Generate an answer** — Pass the question and retrieved context to FLAN-T5-base.
+8. **Display the result** — Show the retrieved text and generated answer in the application.
+
+## 📁 Project Structure
+
+```text
+RAG-Document-Question-Answering-System/
+│
+├── src/
+│   ├── app.py              # Streamlit application
+│   ├── vectorstore.py      # PDF processing and FAISS search
+│   └── chatbot.py          # Cohere-based chatbot implementation
+│
+├── requirements.txt        # Python dependencies
+├── .gitattributes          # Git text-file configuration
+├── LICENSE                 # Project license
+└── README.md               # Project documentation
 ```
- PDF ──► Extract text ──► Split into chunks ──► Create embeddings ──► Store in Pinecone
-                                                                            │
- Your question ──► Create embedding ──► Search similar chunks ◄─────────────┘
-                                               │
-                                               ▼
-                                  Cohere LLM writes the answer
-                                               │
-                                               ▼
-                                     Answer shown in Streamlit
-```
 
----
+*Note: This structure reflects the intended organization. Adjust the paths if your files are arranged differently in the repository.*
 
-## 🛠 Tech Stack
+## 🚀 Getting Started
 
-| Purpose | Technology |
-|---|---|
-| Web interface | [Streamlit](https://streamlit.io/) |
-| Language model | [Cohere](https://cohere.com/) |
-| Vector database | [Pinecone](https://www.pinecone.io/) |
-| PDF reading | [PyMuPDF](https://pymupdf.readthedocs.io/) |
-| Embeddings | [Sentence Transformers](https://www.sbert.net/) |
+Follow these steps to run the project locally.
 
----
-
-## 🚀 Quick Start
-
-### ✅ Prerequisites
-
-- **Python 3.9 or higher** – check with `python --version`
-- **Git** – to download the project
-- A free **[Cohere API key](https://dashboard.cohere.com/api-keys)**
-- A free **[Pinecone API key](https://app.pinecone.io/)**
-
-### 1️⃣ Clone the repository
+### 1. Clone the repository
 
 ```bash
 git clone https://github.com/Anirban31Dutta/RAG-Document-Question-Answering-System.git
+```
+
+Navigate into the project directory:
+
+```bash
 cd RAG-Document-Question-Answering-System
 ```
 
-### 2️⃣ Create a virtual environment
+### 2. Create a virtual environment
 
 ```bash
-python -m venv venv
+python -m venv rag_env
 ```
 
-Activate it:
+Activate it on Windows:
 
 ```bash
-# Windows
-venv\Scripts\activate
-
-# macOS / Linux
-source venv/bin/activate
+rag_env\Scripts\activate
 ```
 
-### 3️⃣ Install dependencies
+On macOS or Linux:
+
+```bash
+source rag_env/bin/activate
+```
+
+### 3. Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-> ⏳ The first install (and first run) can take a few minutes because the embedding model is downloaded.
-
-### 4️⃣ Get your API keys
-
-| Service | Where to get it |
-|---|---|
-| Cohere | [dashboard.cohere.com](https://dashboard.cohere.com/api-keys) |
-| Pinecone | [app.pinecone.io](https://app.pinecone.io/) |
-
-Keep both keys handy. Never commit them to GitHub.
-
-### 5️⃣ Run the app
+The current application also imports packages for FAISS, Transformers, and NumPy. If they are not already listed in your `requirements.txt`, install them:
 
 ```bash
-cd src
+pip install faiss-cpu transformers torch numpy
+```
+
+### 4. Run the application
+
+If your Streamlit file is located in `src/`:
+
+```bash
+streamlit run src/app.py
+```
+
+If `app.py` is in the repository root, use:
+
+```bash
 streamlit run app.py
 ```
 
-Then open **http://localhost:8501** in your browser.
+### 5. Ask questions
 
-### 6️⃣ Use it
+1. Open the local URL displayed in your terminal.
+2. Upload a PDF document.
+3. Wait for the document to be indexed.
+4. Enter a question about the document.
+5. Review the retrieved context and generated answer.
 
-1. Enter your API keys when the app asks for them
-2. **Upload a PDF**
-3. Type your question in the box
-4. Read the answer generated from your document 🎉
+## 🧪 Example
 
----
+Imagine uploading a PDF about machine learning.
 
-## 📁 Project Structure
+**Question:**
 
-```
-RAG-Document-Question-Answering-System/
-├── src/                 # Application source code (Streamlit app + RAG logic)
-├── requirements.txt     # Python dependencies
-├── LICENSE              # Apache 2.0 license
-└── README.md            # You are here
+```text
+What is supervised learning?
 ```
 
----
+**Application workflow:**
 
-## 🩺 Troubleshooting
+* Searches the document for relevant text.
+* Retrieves the top three matching chunks.
+* Uses the retrieved context to generate an answer.
 
-| Problem | Fix |
-|---|---|
-| `streamlit: command not found` | Activate your virtual environment, then run `pip install -r requirements.txt` again |
-| `No such file or directory: app.py` | Make sure you ran `cd src` before `streamlit run app.py` |
-| Invalid API key error | Re-copy the key from the Cohere / Pinecone dashboard and check for extra spaces |
-| Empty or wrong answers | The PDF may be a scanned image. Use a text-based PDF (you can select the text in it) |
-| Slow first start | The embedding model is downloading. Later runs are much faster |
-| Port 8501 already in use | Run `streamlit run app.py --server.port 8502` |
+The response depends on the information available in the uploaded document.
 
----
+## 📦 Models Used
+
+| Model                                    | Usage                                           |
+| ---------------------------------------- | ----------------------------------------------- |
+| `sentence-transformers/all-MiniLM-L6-v2` | Converts text into embeddings                   |
+| `google/flan-t5-base`                    | Generates answers from the question and context |
+
+The models are loaded through their respective Python libraries. The first run may require downloading model files, depending on whether they are already available locally.
+
+## ⚠️ Limitations
+
+* The application works with PDF files and depends on extractable text.
+* Scanned PDFs may require OCR, which is not currently implemented.
+* Answer quality depends on the document's content and the retrieved chunks.
+* The current implementation processes one uploaded document at a time.
+* Large PDFs may require additional memory and processing time.
+* The current answer-generation pipeline is designed as a demonstration and may occasionally produce incomplete or inaccurate answers.
 
 ## 🔮 Future Improvements
 
-- [ ] Support for multiple documents
-- [ ] Multi-language documents
-- [ ] Export chat history
-- [ ] Cloud deployment
-- [ ] Support for more vector databases
+* Support multiple PDF documents.
+* Add OCR for scanned documents.
+* Display page numbers and source references for answers.
+* Improve chunking with overlapping text chunks.
+* Add conversation history and a chat-style interface.
+* Improve error handling for empty or unreadable PDFs.
+* Integrate the Cohere chatbot implementation into the main application.
 
----
+## 👨‍💻 Author
 
-## 🤝 Contributing
+**Anirban Dutta**
 
-Contributions are welcome!
-
-1. Fork the repository
-2. Create a branch: `git checkout -b feature/your-feature`
-3. Commit your changes: `git commit -m "Add your feature"`
-4. Push: `git push origin feature/your-feature`
-5. Open a Pull Request
-
----
+* GitHub: [Anirban31Dutta](https://github.com/Anirban31Dutta)
 
 ## 📜 License
 
-Distributed under the **Apache 2.0 License**. See [`LICENSE`](LICENSE) for details.
-
----
-
-## 🙏 Acknowledgments
-
-[Cohere](https://cohere.com/) · [Pinecone](https://www.pinecone.io/) · [Streamlit](https://streamlit.io/) · [PyMuPDF](https://pymupdf.readthedocs.io/) · [Sentence Transformers](https://www.sbert.net/)
-
-<div align="center">
-
-⭐ **If this project helped you, please give it a star!** ⭐
-
-</div>
+This project is distributed under the Apache License 2.0. See the [LICENSE](LICENSE) file for details.
